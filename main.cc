@@ -12,24 +12,23 @@
 #include"nn.hh"
 #include"csv.hh"
 
-#define INPUT  0
-#define HIDDEN 1
-#define OUTPUT 2
+typedef struct Node
+{
+	std::vector<Input>inputs;
+	double output;
+} Node;
 
 int main(void)
 {
 	std::vector<Input>layers[3];
-	std::vector<double>inputs;
+	Node node;
 
 	srand(time(NULL));
-	inputs=csv_read_floats("values.csv");
+	for(auto val:csv_read_floats("values.csv"))
+		node.inputs.push_back(Input{.value=val,.weight=frand()});
 
-	for(size_t i=0;i<inputs.size();++i)
-		layers[INPUT].push_back(Input{.value=inputs[i],.weight=frand()});
+	layer_print(node.inputs);
 
-	layer_randomize(layers[INPUT]);
-	layer_print(layers[INPUT]);
-
-	printf("%0.2f\n",layer_output(layers[INPUT]));
-	printf("%0.2f\n",normalize(layer_output(layers[INPUT])));
+	printf("output: %0.2f\n",layer_output(node.inputs));
+	printf("norm(output): %0.2f\n",normalize(layer_output(node.inputs)));
 }
